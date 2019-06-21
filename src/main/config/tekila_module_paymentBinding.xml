@@ -1,0 +1,24 @@
+<binding xmlns:ns2="http://jaravir.com/tekila/module/payment" xmlns:ns4="http://jaravir.com/tekila/module/subscription">
+  <namespace uri="http://jaravir.com/tekila/module/payment" default="elements"/>
+  <mapping class="com.jaravir.tekila.module.payment.BasePayment" name="basePayment">
+    <value style="element" name="source" field="source" usage="optional"/>
+    <value style="attribute" name="transactionId" field="transactionId"/>
+    <value style="attribute" name="date" field="date" usage="optional"/>
+  </mapping>
+  <mapping abstract="true" type-name="ns2:payment" class="com.jaravir.tekila.module.payment.Payment">
+    <structure map-as="com.jaravir.tekila.module.payment.BasePayment"/>
+    <value style="attribute" name="amount" field="amount"/>
+    <structure map-as="ns4:subscription" field="subcription" usage="optional" name="subcription"/>
+  </mapping>
+  <mapping extends="com.jaravir.tekila.module.payment.BasePayment" class="com.jaravir.tekila.module.payment.Payment" name="payment">
+    <structure map-as="ns2:payment"/>
+  </mapping>
+  <mapping abstract="true" type-name="ns2:paymentInfo" class="com.jaravir.tekila.module.payment.PaymentInfo">
+    <structure map-as="com.jaravir.tekila.module.payment.BasePayment"/>
+    <value style="attribute" name="amount" field="amount"/>
+    <value style="element" name="customerIdentifier" field="customerIdentifier" usage="optional"/>
+  </mapping>
+  <mapping extends="com.jaravir.tekila.module.payment.BasePayment" class="com.jaravir.tekila.module.payment.PaymentInfo" name="paymentInfo">
+    <structure map-as="ns2:paymentInfo"/>
+  </mapping>
+</binding>

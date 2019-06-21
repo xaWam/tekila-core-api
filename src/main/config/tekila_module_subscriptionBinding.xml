@@ -1,0 +1,33 @@
+<binding xmlns:ns4="http://jaravir.com/tekila/module/subscription" xmlns:ns3="http://jaravir.com/tekila/base/entity" xmlns:ns1="http://jaravir.com/tekila/module/service">
+  <namespace uri="http://jaravir.com/tekila/module/subscription" default="elements"/>
+  <mapping abstract="true" type-name="ns4:balance" class="com.jaravir.tekila.module.subscription.persistence.entity.Balance">
+    <structure map-as="ns3:baseEntity"/>
+    <value style="attribute" name="realBalance" field="realBalance"/>
+    <value style="attribute" name="promoBalance" field="promoBalance"/>
+  </mapping>
+  <mapping extends="com.jaravir.tekila.base.entity.BaseEntity" class="com.jaravir.tekila.module.subscription.persistence.entity.Balance" name="balance">
+    <structure map-as="ns4:balance"/>
+  </mapping>
+  <mapping abstract="true" type-name="ns4:subscriber" class="com.jaravir.tekila.module.subscription.persistence.entity.Subscriber">
+    <structure map-as="ns3:baseEntity"/>
+    <value style="element" name="name" field="name" usage="optional"/>
+    <value style="element" name="address" field="address" usage="optional"/>
+    <collection field="phone" usage="optional" create-type="java.util.ArrayList">
+      <value name="string" type="java.lang.String"/>
+    </collection>
+    <value style="element" name="email" field="email" usage="optional"/>
+  </mapping>
+  <mapping extends="com.jaravir.tekila.base.entity.BaseEntity" class="com.jaravir.tekila.module.subscription.persistence.entity.Subscriber" name="subscriber">
+    <structure map-as="ns4:subscriber"/>
+  </mapping>
+  <mapping abstract="true" type-name="ns4:subscription" class="com.jaravir.tekila.module.subscription.persistence.entity.Subscription">
+    <structure map-as="ns3:baseEntity"/>
+    <structure map-as="ns1:service" field="service" usage="optional" name="service"/>
+    <structure map-as="ns4:balance" field="balance" usage="optional" name="balance"/>
+    <value style="element" name="agreement" field="agreement" usage="optional"/>
+    <value style="element" name="identifier" field="identifier" usage="optional"/>
+  </mapping>
+  <mapping extends="com.jaravir.tekila.base.entity.BaseEntity" class="com.jaravir.tekila.module.subscription.persistence.entity.Subscription" name="subscription">
+    <structure map-as="ns4:subscription"/>
+  </mapping>
+</binding>

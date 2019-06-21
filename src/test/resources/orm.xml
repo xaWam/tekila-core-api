@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="2.5" xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eclipse.org/eclipselink/xsds/persistence/orm http://www.eclipse.org/eclipselink/xsds/eclipselink_orm_2_5.xsd">
+	<persistence-unit-metadata>
+		<persistence-unit-defaults>
+			<access>FIELD</access>
+		</persistence-unit-defaults>
+	</persistence-unit-metadata>
+	<!--  Base module -->
+	<mapped-superclass class="com.jaravir.tekila.base.entity.BaseEntity">
+	    <pre-persist method-name="setLastUpdateDate"></pre-persist>	    
+	    <pre-update method-name="setLastUpdateDate"></pre-update>
+	    <attributes>
+	        <basic name="lastUpdateDate">
+	            <column name="timestamp"/>
+	            <convert>dateTimeToCalendarConverter</convert>	            
+	        </basic>	       
+	    </attributes>
+	</mapped-superclass>
+	<!-- Service module -->
+	<entity class="com.jaravir.tekila.module.service.entity.Service">
+	    <table name="services"></table>
+	    <attributes>
+	        <id name="id">
+	            <generated-value strategy="SEQUENCE"/>
+	        </id>
+	        <basic name="name">
+	            <column nullable="false"/>
+	        </basic>
+	        <basic name="serviceType">
+	            <column name="service_type" nullable="false"/>
+	        </basic>
+	        <basic name="isBillByLifeCycle">
+	            <column name="is_bill_by_lifecycle" nullable="false"/>
+	        </basic>
+	        <one-to-many name="resourceList">
+	            <join-table name="service_resources">
+	                <join-column name="service_id" nullable="false"/>
+	                <inverse-join-column name="resource_id" nullable='false'/>
+	            </join-table>
+	            <cascade>
+	                <cascade-all/>
+	            </cascade>
+	        </one-to-many>
+	        <one-to-one name="rateProfile">
+	           	<join-column name="rate_profile_id" nullable="false"/>	            
+	            <cascade>
+                     <cascade-all/>                
+	            </cascade>
+	        </one-to-one>	        
+	    </attributes>
+	</entity>
+	<entity class="com.jaravir.tekila.module.service.entity.RateProfile">
+	    <table name="rate_profiles"></table>
+	    <attributes>
+	        <id name="id">
+	            <generated-value strategy="SEQUENCE"/>
+	        </id>
+	        <basic name="name">
+	            <column nullable="false"/>
+	        </basic>
+	        <one-to-many name="rateList">
+	            <join-table>
+	                <join-column nullable="false"/>
+	                <inverse-join-column name="rate_id" nullable="false"/>
+	            </join-table>
+	            <cascade>
+                     <cascade-all/>	               
+	            </cascade>	           
+	        </one-to-many>
+	    </attributes>
+	</entity>
+	<entity class="com.jaravir.tekila.module.service.entity.Rate">
+	    <table name="rates"></table>
+	    <pre-persist method-name="updToCurrYear"></pre-persist>	    
+	    <post-load method-name="updToCurrYear"></post-load>
+	    <attributes>
+	        <id name="id">
+	            <generated-value strategy="SEQUENCE"/>
+	        </id>
+	        <basic name="name">
+	            <column nullable="false"/>	            
+	        </basic>
+	        <basic name="price">
+	            <column nullable="false"/>
+	        </basic>
+	        <basic name="isUsePromoResources">
+	            <column name="is_use_promo_resources" nullable="false"/>
+	        </basic>
+	        <basic name="activeFrom">
+	            <convert>dateTimeToCalendarConverter</convert>
+	        </basic>
+	        <basic name="activeTill">
+	            <convert>dateTimeToCalendarConverter</convert>
+	        </basic>	
+	        <transient name="activeFromCurrentYear"/>
+	        <transient name="activeTillCurrentYear"/>       	 
+	    </attributes>	   
+	</entity>
+    <entity class="com.jaravir.tekila.module.service.entity.Resource">
+	    <table name="resources"></table>
+	    <attributes>
+	        <id name="id">
+	            <generated-value strategy="SEQUENCE"/>
+	        </id>	         
+	        <basic name="expirationDate">
+	            <convert>dateTimeToCalendarConverter</convert>
+	        </basic>
+	        <basic name="activeFrom">	            
+	            <convert>localTimeToCalendarConverter</convert>
+	        </basic>
+	        <basic name="activeTill">
+	            <convert>localTimeToCalendarConverter</convert>
+	        </basic>
+	        	                       
+			<one-to-many name="bucketList">
+			    <join-table name="resource_buckets_join">
+			        <join-column name="resource_id" nullable="false"/>
+			        <inverse-join-column name="bucket_id" nullable="false"/>
+			    </join-table>
+			    <cascade>
+                     <cascade-all/>
+			    </cascade>
+			</one-to-many>			
+			<element-collection name="activeDaysOfWeekList">
+	            <collection-table name="resource_active_days"></collection-table>
+	        </element-collection>
+	        <transient name="bucketList"/>
+	    </attributes>	   
+	</entity>
+	<entity class="com.jaravir.tekila.module.service.entity.ResourceBucket">
+	    <table name="resource_buckets"></table>
+	    <attributes>
+	        <id name="id">
+	            <generated-value strategy="SEQUENCE"/>
+	        </id>
+	    </attributes>
+	</entity>     
+	<!-- Subscription module -->
+	<entity class="com.jaravir.tekila.module.subscription.persistence.entity.Subscriber">
+         <table name="subscribers"></table>
+         <attributes>
+             <id name="id">
+                 <generated-value strategy="SEQUENCE"/>
+             </id>
+             <basic name="name">
+                 <column nullable="false"/>
+             </basic>
+             <element-collection name="phoneList">
+                 <collection-table name="subscriber_phones"></collection-table>
+             </element-collection>
+         </attributes>       
+     </entity>
+     
+     <entity class="com.jaravir.tekila.module.subscription.persistence.entity.Balance">
+         <table name="subscription_balances"></table>
+         <attributes>
+             <id name="id">
+                 <generated-value strategy="SEQUENCE"/>
+             </id>                             
+         </attributes>
+     </entity>
+     <entity class="com.jaravir.tekila.module.subscription.persistence.entity.Subscription">  
+         <table name="subscriptions"></table>
+         <attributes>
+             <id name="id">
+                 <generated-value strategy="SEQUENCE"/>
+             </id>
+                <basic name="agreement">
+                 <column nullable="false"/>
+             </basic>
+             <basic name="identifier">
+                 <column nullable="false"/>
+             </basic>            
+             <one-to-one name="service">
+                 <join-table>
+                     <join-column name="subscription_id" nullable="false"/>
+                     <inverse-join-column name="service_id" nullable="false"/>
+                 </join-table>
+                 <cascade>
+                     <cascade-all/>
+                 </cascade>
+             </one-to-one>
+             <one-to-one name="balance">
+                 <join-table name="subscription_balances_join">
+                     <join-column name="subscription_id" nullable="false"/>
+                     <inverse-join-column name="balance_id" nullable="false"/>
+                 </join-table>
+                 <cascade>
+                     <cascade-all/>
+                 </cascade>
+             </one-to-one>                    
+         </attributes>
+     </entity>
+     <!-- Accounting module -->
+     <entity class="com.jaravir.tekila.module.accounting.entity.Transaction">
+         <table name="transaction_log"></table>
+         <attributes>             
+             <id name="id">
+                 <generated-value strategy="SEQUENCE"/>
+             </id>
+             <basic name="type">
+                 <column nullable="false"/>
+                 <convert>transactionTypeConverter</convert>
+             </basic>
+             <basic name="startBalance">
+                 <column nullable="false"/>
+             </basic>
+             <basic name="endBalance">
+                 <column nullable="false"/>
+             </basic>
+             <one-to-one name="subscription">
+                 <join-column name="subscription_id" nullable="false"/>
+                
+             </one-to-one>             
+         </attributes>
+     </entity>
+   	 <converter name="dateTimeToCalendarConverter" class="com.jaravir.tekila.base.entity.DateTimeToCalendarConverter"/>
+   	 <converter name="localTimeToCalendarConverter" class="com.jaravir.tekila.base.entity.LocalTimeToCalendarConverter"/>
+   	 <converter class="com.jaravir.tekila.base.entity.TransactionTypeConverter" name="transactionTypeConverter"></converter>   	 	
+</entity-mappings>

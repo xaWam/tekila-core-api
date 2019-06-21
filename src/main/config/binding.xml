@@ -1,0 +1,6 @@
+<binding name="binding" package="com.jaravir.tekila.base.entity">
+  <include path="tekila_base_entityBinding.xml"/>
+  <include path="tekila_module_subscriptionBinding.xml"/>
+  <include path="tekila_module_serviceBinding.xml"/>
+  <include path="tekila_module_paymentBinding.xml"/>
+</binding>

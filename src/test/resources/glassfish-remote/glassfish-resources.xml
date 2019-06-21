@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE resources PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN" "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
+<resources>
+    <jdbc-connection-pool name="jdbc/example-pool"
+        res-type="javax.sql.ConnectionPoolDataSource" datasource-classname="oracle.jdbc.pool.OracleConnectionPoolDataSource"
+        ping="true">
+        <property name="ConnectionAttributes" value="create=true" />
+        <property name="DatabaseName" value="SPD" />
+        <property name="Password" value="bosK=bolo*12" />
+        <property name="User" value="tekila" />
+    </jdbc-connection-pool>
+    <jdbc-resource jndi-name="jdbc/tekilaPool" pool-name="TekilaPool" />
+</resources>

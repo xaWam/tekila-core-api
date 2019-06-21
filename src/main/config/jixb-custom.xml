@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom force-mapping="true">
+    <package name="com.jaravir.tekila.module.subscription.persistence.entity" namespace="http://jaravir.com/tekila/module/subscription"></package>
+    <package name="com.jaravir.tekila.module.service.entity" namespace="http://jaravir.com/tekila/module/service"></package>
+    <package name="com.jaravir.tekila.module.payment" namespace="http://jaravir.com/tekila/module/payment"></package>
+    <package name="com.jaravir.tekila.base" namespace="http://jaravir.com/tekila/base"></package>
+    
+</custom>

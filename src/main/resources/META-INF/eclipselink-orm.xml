@@ -1,0 +1,3180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity-mappings version="2.5" xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://www.eclipse.org/eclipselink/xsds/persistence/orm http://www.eclipse.org/eclipselink/xsds/eclipselink_orm_2_5.xsd">
+    <persistence-unit-metadata>
+        <persistence-unit-defaults>
+            <access>FIELD</access>
+        </persistence-unit-defaults>
+    </persistence-unit-metadata>
+
+    <!--  Base module -->
+    <mapped-superclass class="com.jaravir.tekila.base.entity.BaseEntity">
+        <pre-persist method-name="setLastUpdateDate"></pre-persist>
+        <pre-update method-name="setLastUpdateDate"></pre-update>
+        <attributes>
+            <basic name="lastUpdateDate">
+                <column name="last_update_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+        </attributes>
+    </mapped-superclass>
+    <!-- Service module
+     <generated-value strategy="SEQUENCE"/>
+    -->
+    <entity class="com.jaravir.tekila.module.service.entity.ServiceProvider">
+        <table name="providers"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.base.entity.OnlineJoinerCampaign">
+        <table name="ONLINE_JOINER_CAMPAIGN"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="campaignId">
+                <column name="campaign_id" />
+            </basic>
+            <basic name="amount">
+                <column name="amount" />
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.service.entity.Service">
+        <table name="services"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="name">
+                <column nullable="false"/>
+            </basic>
+            <basic name="alternateName">
+                <column name="alternate_name"/>
+            </basic>
+            <basic name="serviceType">
+                <column name="service_type" nullable="false"/>
+            </basic>
+            <basic name="isBillByLifeCycle">
+                <column name="is_bill_by_lifecycle" nullable="false"/>
+            </basic>
+            <basic name="installFee">
+                <column name="install_fee"/>
+            </basic>
+
+            <basic name="servicePrice">
+                <column name="service_price"/>
+            </basic>
+            <basic name="isAllowEquipment">
+                <column name="allow_equipment"/>
+            </basic>
+            <basic name="isAllowStock">
+                <column name="allow_stock"/>
+            </basic>
+            <basic name="isEligibleForServiceChange">
+                <column name="is_eligible_for_service_change"/>
+            </basic>
+            <basic name="isIptvBundled">
+                <column name="is_iptv_bundled"/>
+            </basic>
+            <many-to-one name="group">
+                <join-column name="group_id"/>
+            </many-to-one>
+            <one-to-many name="resourceList">
+                <join-table name="service_resources">
+                    <join-column name="service_id" nullable="false"/>
+                    <inverse-join-column name="resource_id" nullable='false'/>
+                </join-table>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="vasList">
+                <join-table name="vas_services">
+                    <join-column name="service_id" nullable="false"/>
+                    <inverse-join-column name="vas_id" nullable="false"/>
+                </join-table>
+                <cascade>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="defaultVasList">
+                <join-table name="default_vas_services">
+                    <join-column name="service_id" nullable="false"/>
+                    <inverse-join-column name="vas_id" nullable="false"/>
+                </join-table>
+            </one-to-many>
+            <one-to-many name="allowedVASList">
+                <join-table name="allowed_vas_services">
+                    <join-column name="service_id" nullable="false"/>
+                    <inverse-join-column name="vas_id" nullable="false"/>
+                </join-table>
+                <cascade>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="serviceProfileList">
+                <join-table name="service_profile_join">
+                    <join-column name="service_id" nullable="false"/>
+                    <inverse-join-column name="service_profile_id" nullable="false"/>
+                </join-table>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="settings">
+                <join-table name="service_service_settings_join">
+                    <join-column name="service_id" nullable="false"/>
+                    <inverse-join-column name="setting_id" nullable="false"/>
+                </join-table>
+                <cascade>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="notificationSettings">
+                <join-table name="service_notif_settings_join">
+                    <join-column name="notif_id" nullable="false"/>
+                    <inverse-join-column name="service_id" nullable="false"/>
+                </join-table>
+                <cascade>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="vasSettings">
+                <map-key-join-column name="vas_id"/>
+                <join-table name="service_vas_settings">
+                    <join-column name="service_id"/>
+                    <inverse-join-column name="profile_id"/>
+                </join-table>
+            </one-to-many>
+            <one-to-many name="statusChangeRules">
+                <join-table name="srv_status_change_rules_join">
+                    <join-column name="service_id"/>
+                    <inverse-join-column name="rule_id"/>
+                </join-table>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="properties" mapped-by="service" orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+
+            <one-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </one-to-one>
+            <one-to-one name="billingModel">
+                <join-column name="billing_model_id"/>
+            </one-to-one>
+            <one-to-one name="subgroup">
+                <join-column name="subgroup_id"/>
+            </one-to-one>
+
+            <!--<transient  name="vasList"/>-->
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.service.entity.Zone">
+        <table name="zones"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="name">
+                <column name="name"/>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.service.entity.Profile">
+        <table name="profiles"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="name">
+                <column name="name"/>
+            </basic>
+            <basic name="profileType">
+                <column name="profile_type"/>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.service.entity.ServiceProperty">
+        <table name="service_properties"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="price">
+                <column name="price" nullable="false"/>
+            </basic>
+
+            <many-to-one name="service">
+                <join-column name="service_id" nullable="false"/>
+            </many-to-one>
+            <many-to-one name="zone">
+                <join-column name="zone_id" nullable="false"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.service.entity.SubscriptionServiceType">
+        <table name="subscription_service_types"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="name">
+                <column name="name"/>
+            </basic>
+            <many-to-one name="profile">
+                <join-column name="profile_id" nullable="false"/>
+            </many-to-one>
+            <one-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.service.model.BillingModel">
+        <table name="billing_models"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="applyLateFee">
+                <column name="apply_late_fee"/>
+            </basic>
+            <basic name="gracePeriodInDays">
+                <column name="num_grace_days"/>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.service.NotificationSetting">
+        <table name="service_notif_settings"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="event">
+                <convert>billingEventConverter</convert>
+            </basic>
+            <element-collection name="channelList">
+                <column name="channel_id"/>
+                <convert>notificationChannelConverter</convert>
+                <collection-table name="notif_channels">
+                    <join-column name="notif_id"/>
+                </collection-table>
+                <cascade-on-delete>true</cascade-on-delete>
+            </element-collection>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.service.entity.ServiceGroup">
+        <table name="service_groups"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="type">
+                <column name="type" nullable="false"/>
+            </basic>
+            <one-to-many name="services" mapped-by="group"></one-to-many>
+            <one-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.service.entity.VASCode">
+        <table name="vas_codes"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <one-to-one name="generator">
+                <join-column name="code" nullable="false"/>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.service.entity.VASCodeSequence">
+        <table name="vas_code_seq"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.service.entity.ServiceSetting">
+        <table name="service_settings"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="type">
+                <column name="setting_type" nullable="false"/>
+            </basic>
+            <basic name="serviceType">
+                <column name="service_type" nullable="false"/>
+            </basic>
+            <many-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+
+
+    <entity class="com.jaravir.tekila.module.service.entity.Resource">
+        <table name="resources"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="expirationDate">
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="activeFrom">
+                <convert>localTimeToCalendarConverter</convert>
+            </basic>
+            <basic name="activeTill">
+                <convert>localTimeToCalendarConverter</convert>
+            </basic>
+
+            <one-to-many name="bucketList">
+                <join-table name="resource_buckets_join">
+                    <join-column name="resource_id" nullable="false"/>
+                    <inverse-join-column name="bucket_id" nullable="false"/>
+                </join-table>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            <element-collection name="activeDaysOfWeekList">
+                <collection-table name="resource_active_days">
+                </collection-table>
+                <cascade-on-delete>true</cascade-on-delete>
+            </element-collection>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.SubscriptionResource">
+        <table name="subscription_resources"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="expirationDate">
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="activeFrom">
+                <convert>localTimeToCalendarConverter</convert>
+            </basic>
+            <basic name="activeTill">
+                <convert>localTimeToCalendarConverter</convert>
+            </basic>
+            <basic name="activationDate">
+                <column name="activation_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <one-to-many name="bucketList">
+                <join-table name="sub_resource_buckets_join">
+                    <join-column name="sub_resource_id" nullable="false"/>
+                    <inverse-join-column name="bucket_id" nullable="false"/>
+                </join-table>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            <element-collection name="activeDaysOfWeekList">
+                <collection-table name="sub_resource_active_days"></collection-table>
+                <cascade-on-delete>true</cascade-on-delete>
+            </element-collection>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.service.entity.ResourceBucket">
+        <table name="resource_buckets"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.SubscriptionResourceBucket">
+        <table name="sub_resource_buckets"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.service.entity.ValueAddedService">
+        <table name="value_added_services"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="alternateName">
+                <column name="alternate_name"/>
+            </basic>
+            <basic name="isManagedByPrincipal">
+                <column name="is_autonomous"/>
+            </basic>
+            <basic name="doPartialCharge">
+                <column name="do_partial_charge"/>
+            </basic>
+            <basic name="chargeableItem">
+                <column name="chargeable_item"/>
+            </basic>
+            <basic name="creationDate">
+                <column name="creation_date"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="maxNumber">
+                <column name="max_count"/>
+            </basic>
+            <basic name="credit">
+                <column name="is_credit"/>
+            </basic>
+            <basic name="suspension">
+                <column name="is_suspension"/>
+            </basic>
+            <basic name="price">
+                <column name="VAS_PRICE"/>
+            </basic>
+            <basic name="staticIPType">
+                <column name="static_ip_type"/>
+                <convert>staticIPTypeConverter</convert>
+            </basic>
+            <basic name="isIptv">
+                <column name="is_iptv"/>
+            </basic>
+            <basic name="isSip">
+                <column name="is_sip"/>
+            </basic>
+            <many-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </many-to-one>
+            <many-to-one name="code">
+                <join-column name="code_id" nullable="false"/>
+            </many-to-one>
+            <one-to-many name="settings">
+                <join-table name="vas_settings_join">
+                    <join-column name="vas_id" nullable="false"/>
+                    <inverse-join-column name="vas_setting_id" nullable="false"/>
+                </join-table>
+            </one-to-many>
+            <one-to-one name="resource">
+                <join-table name="vas_resources">
+                    <join-column name="resource_id"/>
+                    <inverse-join-column name="vas_id"/>
+                </join-table>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+                <cascade-on-delete>true</cascade-on-delete>
+            </one-to-one>
+            <one-to-one name="category">
+            </one-to-one>
+
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.service.VASSetting">
+        <table name="vas_settings"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+        </attributes>
+    </entity>
+    <!-- Subscription module -->
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.Subscriber">
+        <table name="subscribers"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="isBilledByLifeCycle">
+                <column name="is_bill_by_lifecycle"/>
+            </basic>
+            <basic name="lifeCycle">
+                <column name="life_cycle"/>
+            </basic>
+            <basic name="lastPaymentDate">
+                <column name="last_payment_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="creationDate">
+                <column name="creationdate" column-definition="DATE DEFAULT CURRENT_DATE" updatable="false"
+                        insertable="false"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="fnCategory">
+                <column name="func_category"/>
+                <convert>funcCategoryConverter</convert>
+            </basic>
+            <one-to-many name="subscriptions" mapped-by="subscriber"
+                         target-entity="com.jaravir.tekila.module.subscription.persistence.entity.Subscription">
+                <cascade>
+                    <cascade-remove/>
+                </cascade>
+                <cascade-on-delete>true</cascade-on-delete>
+            </one-to-many>
+            <one-to-many name="invoices" mapped-by="subscriber">
+                <cascade>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+            <one-to-one name="details">
+                <join-column name="sub_detail" referenced-column-name="id"/>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <one-to-one name="taxCategory">
+                <join-column name="tax_category"/>
+            </one-to-one>
+            <one-to-one name="runtimeDetails">
+                <join-column name="runtime_details_id"/>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.SubscriberDetails">
+        <table name="subscriber_details"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="dateOfBirth">
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="passportIssueDate">
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="entryDate">
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="lang">
+                <convert>languageConverter</convert>
+            </basic>
+            <one-to-one name="subscriber" mapped-by="details">
+                <join-column name="subcriber_id"/>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.AsyncProvisioningTask">
+        <table name="async_provisioning_queue"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="eventTime">
+                <column name="event_time" column-definition="DATE DEFAULT CURRENT_DATE" updatable="false"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="fd">
+                <column name="fd" />
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="td">
+                <column name="td" />
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="subscriptionCreated">
+                <column name="created" />
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="password">
+                <column name="pwd" />
+            </basic>
+            <basic name="eventType">
+                <column name="event_type" />
+            </basic>
+            <basic name="taskStatus">
+                <column name="event_status" />
+            </basic>
+            <basic name="providerId">
+                <column name="provider_id" />
+            </basic>
+            <basic name="groupName">
+                <column name="group_name" />
+            </basic>
+            <basic name="newAccount">
+                <column name="new_account" />
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.SubscriptionView" read-only="true">
+        <table name="v_all_subscriptions"></table>
+        <attributes>
+            <id name="id"></id>
+            <basic name="dateOfBirth">
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="creationdate">
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="status">
+                <convert>subscriptionStatusConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.Balance">
+        <table name="subscription_balances"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.Subscription">
+        <table name="subscriptions"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="status">
+                <convert>subscriptionStatusConverter</convert>
+            </basic>
+            <basic name="type">
+                <column name="sub_type"/>
+                <convert>subscriptionTypeConverter</convert>
+            </basic>
+            <basic name="agreement">
+                <column nullable="false"/>
+            </basic>
+            <basic name="identifier">
+                <column nullable="false"/>
+            </basic>
+            <basic name="expirationDate">
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="lastStatusChangeDate">
+                <column name="last_status_change_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="creationDate">
+                <column name="creationdate" column-definition="DATE DEFAULT CURRENT_DATE"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="lastPaymentDate">
+                <column name="last_payment_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="billedUpToDate">
+                <column name="billed_upto_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="expirationDateWithGracePeriod">
+                <column name="exp_date_with_grace_period"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="activationDate">
+                <column name="activation_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="isDetailsIdentToSubscriber">
+                <column name="details_ident_to_subscriber"/>
+            </basic>
+            <basic name="lastBilledDate">
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="installationFee">
+                <column name="installation_fee"/>
+            </basic>
+            <basic name="serviceFeeRate">
+                <column name="service_fee_rate"/>
+            </basic>
+            <basic name="restoredFromFinal">
+                <column name="restored_from_final"/>
+            </basic>
+            <basic name="restorationDate">
+                <column name="restoration_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="isDiscountEnabled">
+                <column name="is_discount_enabled"/>
+            </basic>
+            <basic name="discountPercentage">
+                <column name="discount_percentage"/>
+            </basic>
+            <basic name="isTaxFreeEnabled">
+                <column name="is_tax_free_enabled"/>
+            </basic>
+            <basic name="paymentType">
+                <column name="payment_type" nullable="true" />
+                <enumerated>STRING</enumerated>
+            </basic>
+            <basic name="isIptvOwner">
+                <column name="is_iptv_owner"/>
+            </basic>
+            <one-to-many name="resources" fetch="LAZY">
+                <join-table name="subscription_resources_join">
+                    <join-column name="subscription_id" nullable="false"/>
+                    <inverse-join-column name="resource_id" nullable="false"/>
+                </join-table>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="settings" fetch="LAZY">
+                <join-table name="sub_sub_settings_join">
+                    <join-column name="subscription_id" nullable="false"/>
+                    <inverse-join-column name="subscription_setting_id" nullable="false"/>
+                </join-table>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="vasList" fetch="LAZY">
+                <join-table name="subscription_sub_vas">
+                    <join-column name="subscription_id"/>
+                    <inverse-join-column name="vas_id"/>
+                </join-table>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-merge/>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="notificationSettings" fetch="LAZY">
+                <join-table name="subscription_notif_sett_join">
+                    <join-column name="notif_id" nullable="false"/>
+                    <inverse-join-column name="subscription_id" nullable="false"/>
+                </join-table>
+                <cascade>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="compensationList"
+                         target-entity="com.jaravir.tekila.module.subscription.persistence.entity.Compensation"
+                         mapped-by="subscription" fetch="LAZY">
+            </one-to-many>
+            <one-to-many name="campaignRegisters"
+                         target-entity="com.jaravir.tekila.module.campaign.CampaignRegister"
+                         mapped-by="subscription" fetch="LAZY">
+            </one-to-many>
+
+            <one-to-one name="service">
+                <join-table>
+                    <join-column name="subscription_id" nullable="false"/>
+                    <inverse-join-column name="service_id" nullable="false"/>
+                </join-table>
+                <cascade-on-delete>true</cascade-on-delete>
+            </one-to-one>
+            <one-to-one name="balance">
+                <join-table name="subscription_balances_join">
+                    <join-column name="subscription_id" nullable="false"/>
+                    <inverse-join-column name="balance_id" nullable="false"/>
+                </join-table>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+
+            <one-to-one name="billingModel">
+                <join-column name="billing_model_id"/>
+            </one-to-one>
+
+            <one-to-one name="runtimeDetails">
+                <join-column name="runtime_details_id"/>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+
+            <one-to-one name="subscriber">
+                <join-column name="subscriber_id" nullable="false"/>
+                <cascade>
+                    <cascade-remove/>
+                </cascade>
+                <cascade-on-delete>true</cascade-on-delete>
+            </one-to-one>
+            <one-to-one name="details">
+                <join-column name="subscription_details_id"/>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <many-to-one name="user" fetch="LAZY">
+                <join-column name="user_id"/>
+            </many-to-one>
+            <one-to-one name="contract" fetch="LAZY">
+                <join-column name="contract_id"/>
+            </one-to-one>
+            <element-collection name="defaultVasCharges">
+                <column name="charge" nullable="false"/>
+                <collection-table name="subscription_df_vas_charges">
+                    <join-column name="subscription_id" nullable="false"/>
+                </collection-table>
+            </element-collection>
+            <transient name="technicalStatus"/>
+            <transient name="activeCampaigns"/>
+            <transient name="activeCampaignsStr"/>
+            <transient name="speed"/>
+            <!--
+     <transient name="vasList"/>
+            -->
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.Contract">
+        <table name="contracts"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="document">
+                <column name="document" column-definition="BLOB NOT NULL" nullable="false"/>
+                <lob/>
+            </basic>
+            <one-to-many name="addendumList">
+                <join-table name="contracts_addendum_join">
+                    <join-column name="contract_id" nullable="false"/>
+                    <inverse-join-column name="addendum_id" nullable="false"/>
+                </join-table>
+            </one-to-many>
+            <one-to-one name="user">
+                <join-column name="user_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.Compensation">
+        <table name="compensations"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="fromDate">
+                <column name="fromDate"></column>
+            </basic>
+            <basic name="dayCount">
+                <column name="dayCount"></column>
+            </basic>
+            <basic name="ticketId">
+                <column name="ticketId"></column>
+            </basic>
+            <basic name="comments">
+                <column name="comments"></column>
+            </basic>
+            <many-to-one name="subscription" fetch="LAZY">
+                <join-column name="SUBSCRIPTION_ID"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.Addendum">
+        <table name="contract_addenda"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="document">
+                <column name="document" column-definition="BLOB NOT NULL" nullable="false"/>
+                <lob/>
+            </basic>
+            <one-to-one name="user">
+                <join-column name="user_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.SubscriptionSetting">
+        <table name="subscription_settings"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="value">
+                <column name="setting_value" nullable="false"/>
+            </basic>
+            <many-to-one name="properties">
+                <join-column name="service_setting_id" nullable="false"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.SubscriptionVAS">
+        <table name="subscription_vas"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="expirationDate">
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="billedUpToDate">
+                <column name="billed_upto_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="activeFromDate">
+                <column name="active_from"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="serviceFeeRate">
+                <column name="service_fee_rate"/>
+            </basic>
+            <basic name="price">
+                <column name="vas_price"/>
+            </basic>
+            <basic name="count">
+                <column name="item_count"/>
+            </basic>
+            <basic name="remainCount">
+                <column name="remain_count"/>
+            </basic>
+            <basic name="desc">
+                <column name="dsc"/>
+            </basic>
+            <basic name="vasStatus">
+                <column name="vas_status"/>
+            </basic>
+            <one-to-many name="settings">
+                <join-table name="subscription_vas_set_join">
+                    <join-column name="sbn_vas_id" nullable="false"/>
+                    <inverse-join-column name="setting_id" nullable="false"/>
+                </join-table>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            <one-to-one name="subscription">
+                <join-column name="subscription_id"/>
+            </one-to-one>
+            <one-to-one name="resource">
+                <join-column name="resource_id"/>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.SubscriptionVASSetting">
+        <table name="subscription_vas_settings"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="length">
+                <column name="item_length"/>
+            </basic>
+            <transient name="total"/>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.reactivation.SubscriptionReactivation">
+        <table name="subscription_reactivation"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="createdDate">
+                <column name="created_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="reactivatedDate">
+                <column name="reactivated_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <one-to-one name="subscription">
+                <join-column name="subscription_id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.agreement.AgreementSequence">
+        <table name="agreement_sequences"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="agrSeqPkSeq"/>
+                <sequence-generator name="agrSeqPkSeq" sequence-name="agr_seq_pk_seq" initial-value="0"
+                                    allocation-size="1"/>
+            </id>
+            <basic name="agreementNumber">
+                <column name="agreement_num" nullable="false"/>
+            </basic>
+            <one-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.accounting.entity.PaymentSequence">
+        <table name="payment_sequence"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="pmtSeqPkSeq"/>
+                <sequence-generator name="pmtSeqPkSeq" sequence-name="pmt_seq_pk_seq" initial-value="0"
+                                    allocation-size="1"/>
+            </id>
+            <basic name="paymentNumber">
+                <column name="payment_num" nullable="false"/>
+            </basic>
+        </attributes>
+    </entity>
+    <entity name="message_sequence" class="com.jaravir.tekila.module.event.notification.MessageId" access="FIELD">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="TABLE" generator="MES_SEQ"/>
+                <table-generator name="MES_SEQ" table="MESSAGE_TABLE" pk-column-name="SEQ_NAME"
+                                 value-column-name="SEQ_COUNT" pk-column-value="MES_SEQ"/>
+            </id>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.transition.StatusChangeRule">
+        <table name="srv_status_change_rules"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="initialStatus">
+                <column name="initial_status"/>
+            </basic>
+            <basic name="finalStatus">
+                <column name="final_status"/>
+            </basic>
+            <one-to-one name="vas">
+                <join-column name="vas_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <!-- base -->
+    <entity class="com.jaravir.tekila.base.auth.entity.SessionInfo">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="login_timestamp">
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="expires_timestamp">
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="ipAddress">
+                <column name="ip_address"/>
+            </basic>
+            <basic name="forwardedFor">
+                <column name="x_forwarded_for"/>
+            </basic>
+            <basic name="sessionID">
+                <column name="session_id"/>
+            </basic>
+        </attributes>
+    </entity>
+    <!-- Accounting module -->
+    <entity class="com.jaravir.tekila.module.accounting.entity.Transaction">
+        <table name="transaction_log"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="transLogPkSeq"/>
+                <sequence-generator name="transLogPkSeq" initial-value="15000500" sequence-name="trans_log_pk_seq"
+                                    allocation-size="1"/>
+            </id>
+            <basic name="type">
+                <column nullable="false"/>
+                <convert>transactionTypeConverter</convert>
+            </basic>
+            <basic name="startBalance">
+                <column nullable="false"/>
+            </basic>
+            <basic name="endBalance">
+                <column nullable="false"/>
+            </basic>
+            <one-to-one name="subscription">
+                <join-column name="subscription_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.accounting.entity.Payment">
+        <table name="payments"></table>
+        <inheritance strategy="TABLE_PER_CLASS"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="paymentIdSeq"/>
+                <sequence-generator name="paymentIdSeq" sequence-name="payment_id_seq" allocation-size="1"/>
+            </id>
+            <basic name="datetime">
+                <column name="date_time"/>
+            </basic>
+            <basic name="chequeID">
+                <column name="cheque_id"/>
+            </basic>
+            <basic name="testPayment">
+                <column name="test_payment"/>
+            </basic>
+            <basic name="fd">
+                <column name="fd" column-definition="DATE DEFAULT CURRENT_DATE" updatable="false"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="purpose">
+                <convert>paymentPurposeConverter</convert>
+            </basic>
+            <basic name="campaignId">
+                <column name="campaign_id"/>
+            </basic>
+            <many-to-one name="method" fetch="LAZY">
+                <join-column name="method"/>
+            </many-to-one>
+            <one-to-one name="ext_user">
+                <join-column name="ext_user_id"/>
+            </one-to-one>
+            <one-to-one name="user">
+                <join-column name="user_id"/>
+            </one-to-one>
+            <one-to-one name="service">
+                <join-column name="service"/>
+                <cascade-on-delete>true</cascade-on-delete>
+            </one-to-one>
+            <one-to-one name="account">
+                <join-column name="account_id" nullable="false"/>
+            </one-to-one>
+            <one-to-one name="transaction">
+                <join-column name="transaction_id"/>
+            </one-to-one>
+            <transient name="user_id"/>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.SubscriptionDetails">
+        <table name="subscription_details"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="lang">
+                <convert>languageConverter</convert>
+            </basic>
+            <basic name="desc">
+                <column name="dsc"/>
+            </basic>
+            <one-to-one name="subscription" mapped-by="details"/>
+            <transient name="salesPerson"/>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.SubscriptionRuntimeDetails">
+        <table name="subscription_runtime_details"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="loginAttempt">
+                <column name="login_attempt"/>
+            </basic>
+            <basic name="shaHash">
+                <column name="sha_hash"/>
+            </basic>
+            <basic name="passwordResetTime">
+                <column name="password_reset_time"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="emailChecksum">
+                <column name="email_checksum"/>
+            </basic>
+            <basic name="emailActivated">
+                <column name="email_activated"/>
+            </basic>
+            <basic name="phoneNumber">
+                <column name="phone_number"/>
+            </basic>
+            <basic name="phoneLastUpdateDate">
+                <column name="phone_last_update_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="firstVisitTime">
+                <column name="first_visit_time"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="registrationTime">
+                <column name="registration_time"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="lastLoginTime">
+                <column name="last_login_time"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+
+
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.SubscriberRuntimeDetails">
+        <table name="subscriber_runtime_details"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="smsSent">
+                <column name="sms_sent"/>
+            </basic>
+            <basic name="smsCode">
+                <column name="sms_code"/>
+            </basic>
+            <basic name="smsAttempt">
+                <column name="sms_attempt"/>
+            </basic>
+            <basic name="smsSentTime">
+                <column name="sms_sent_time"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="smsCodeExpiredTime">
+                <column name="sms_code_expired_time"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.accounting.entity.Charge">
+        <table name="charges"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="datetime">
+                <column name="date_time"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="user_id">
+                <column name="user_id"/>
+            </basic>
+            <basic name="status">
+                <convert>accountingStatusConverter</convert>
+            </basic>
+            <one-to-one name="service">
+                <join-column name="service_id"/>
+                <cascade-on-delete>true</cascade-on-delete>
+            </one-to-one>
+            <one-to-one name="subscriber">
+                <join-column name="subscriber_id"/>
+                <cascade-on-delete>true</cascade-on-delete>
+            </one-to-one>
+            <one-to-one name="vas">
+                <join-column name="vas_id"/>
+                <cascade-on-delete>true</cascade-on-delete>
+            </one-to-one>
+            <one-to-one name="transaction">
+                <join-column name="transaction_id"/>
+            </one-to-one>
+            <one-to-one name="subscription">
+                <join-column name="subscription_id"/>
+            </one-to-one>
+            <transient name="user"/>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.accounting.entity.Refund">
+        <table name="refunds"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="chequeID">
+                <column name="cheque_id"/>
+            </basic>
+            <basic name="datetime">
+                <column name="date_time"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="user_id">
+                <column name="user_id"/>
+            </basic>
+            <one-to-one name="service">
+                <join-column name="service_id"/>
+            </one-to-one>
+            <one-to-one name="subscriber">
+                <join-column name="subscriber_id"/>
+            </one-to-one>
+            <transient name="user"/>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.accounting.entity.Invoice">
+        <table name="invoices"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="state">
+                <convert>invoiceStateConverter</convert>
+            </basic>
+            <basic name="sumPaid">
+                <column name="sum_paid"/>
+            </basic>
+            <basic name="sumCharged">
+                <column name="sum_charged"/>
+            </basic>
+            <basic name="creationDate">
+                <column name="creationdate" column-definition="DATE DEFAULT CURRENT_TIMESTAMP"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="closeDate">
+                <column name="close_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="lastPaymentDate">
+                <column name="last_payment_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="lastChargeDate">
+                <column name="last_charge_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="status">
+                <convert>accountingStatusConverter</convert>
+            </basic>
+            <many-to-one name="subscriber"/>
+            <many-to-one name="user">
+                <join-column name="user_id" nullable="false"/>
+            </many-to-one>
+            <one-to-many name="charges">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="payments">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="refunds"/>
+            <one-to-one name="subscription">
+                <join-column name="subscription_id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.accounting.entity.SalesPartnerInvoice">
+        <table name="sales_partner_invoices"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="state">
+                <convert>invoiceStateConverter</convert>
+            </basic>
+            <basic name="sumPaid">
+                <column name="sum_paid"/>
+            </basic>
+            <basic name="sumCharged">
+                <column name="sum_charged"/>
+            </basic>
+            <basic name="creationDate">
+                <column name="creationdate" column-definition="DATE DEFAULT CURRENT_TIMESTAMP"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="closeDate">
+                <column name="close_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="lastPaymentDate">
+                <column name="last_payment_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="lastChargeDate">
+                <column name="last_charge_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="status">
+                <convert>accountingStatusConverter</convert>
+            </basic>
+            <many-to-one name="partner">
+                <join-column name="sales_partner_id"/>
+            </many-to-one>
+            <many-to-one name="user">
+                <join-column name="user_id" nullable="false"/>
+            </many-to-one>
+            <one-to-many name="charges">
+                <join-table name="sales_partner_inv_charge_join">
+                    <join-column name="sales_partner_charge_id"/>
+                    <inverse-join-column name="sales_partner_invoice_id"/>
+                </join-table>
+            </one-to-many>
+            <one-to-many name="payments"/>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.accounting.entity.SalesPartnerCharge">
+        <table name="sales_partner_charges"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <many-to-one name="salesPartner">
+                <join-column name="sales_partner_id"/>
+            </many-to-one>
+            <one-to-one name="user">
+                <join-column name="user_id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.accounting.entity.TaxationCategory">
+        <table name="tax_categories"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="isDefault">
+                <column name="is_default"/>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.accounting.entity.AccountingCategory">
+        <table name="accounting_categories"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="type">
+                <convert>accCategoryTypeConverter</convert>
+            </basic>
+            <one-to-one name="taxCategory">
+                <join-column name="tax_category_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.accounting.entity.Operation">
+        <table name="accounting_operations"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <many-to-one name="accTransaction">
+                <join-column name="acc_transaction_id" nullable="false"/>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </many-to-one>
+            <one-to-one name="category">
+                <join-column name="category_id" nullable="false"/>
+            </one-to-one>
+            <one-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </one-to-one>
+            <one-to-one name="user">
+                <join-column name="user_id" nullable="false"/>
+            </one-to-one>
+            <one-to-one name="transaction">
+                <join-column name="transaction_id" nullable="false"/>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <one-to-one name="subscription">
+                <join-column name="subscription_id" nullable="false"/>
+            </one-to-one>
+            <one-to-one name="bank">
+                <join-column name="bank_id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.accounting.entity.AccountingTransaction">
+        <table name="accounting_transactions"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="type">
+                <column name="acc_trans_type"/>
+                <convert>accTransactionTypeConverter</convert>
+            </basic>
+            <basic name="dsc">
+                <column name="dsc"/>
+            </basic>
+            <one-to-many name="operations" mapped-by="accTransaction">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            <one-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </one-to-one>
+            <one-to-one name="user">
+                <join-column name="user_id" nullable="false"/>
+            </one-to-one>
+            <one-to-one name="rolledBackTrans">
+                <join-column name="rolledbacktrans_id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.accounting.entity.Bank">
+        <table name="banks"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <many-to-one name="parent">
+                <join-column name="parent_id"/>
+            </many-to-one>
+            <one-to-one name="currency">
+                <join-column name="currency_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.accounting.entity.Currency">
+        <table name="currencies"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+        </attributes>
+    </entity>
+    <!-- Provisioning -->
+    <entity class="com.jaravir.tekila.provision.broadband.devices.MiniPop">
+        <table name="minipops"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="category">
+                <column name="category"/>
+            </basic>
+            <basic name="serial">
+                <column name="serial"/>
+            </basic>
+            <basic name="model">
+                <column name="model"/>
+            </basic>
+            <basic name="numberOfPorts">
+                <column name="ports_number"/>
+            </basic>
+            <basic name="masterVlan">
+                <column name="master_vlan"/>
+            </basic>
+            <basic name="subVlan">
+                <column name="sub_vlan"/>
+            </basic>
+            <basic name="midipopSlot">
+                <column name="midipop_slot"/>
+            </basic>
+            <basic name="midipopPort">
+                <column name="midipop_port"/>
+            </basic>
+            <basic name="deviceStatus">
+                <column name="device_status"/>
+                <convert>deviceStatusConverter</convert>
+            </basic>
+            <one-to-many name="reservedPortList">
+                <join-table name="minipop_ports_join">
+                    <join-column name="minipop_id"/>
+                    <inverse-join-column name="port_id"/>
+                </join-table>
+            </one-to-many>
+            <one-to-many name="houses">
+                <join-table name="minipop_houses_join">
+                    <join-column name="minipop_id"/>
+                    <inverse-join-column name="house_id"/>
+                </join-table>
+            </one-to-many>
+            <one-to-one name="provider">
+                <join-column name="provider_id"/>
+            </one-to-one>
+            <one-to-one name="ats">
+                <join-column name="ats_id"/>
+            </one-to-one>
+            <one-to-one name="nas">
+                <join-column name="nas_id"/>
+            </one-to-one>
+            <one-to-one name="street">
+                <join-column name="street_id"/>
+            </one-to-one>
+            <one-to-one name="midipop">
+                <join-column name="midipop_id"/>
+            </one-to-one>
+            <transient name="preferredPort"/>
+            <!--<transient name="reservedPortList"/>-->
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.provision.broadband.devices.Port">
+        <table name="minipop_ports"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="number">
+                <column name="port_number"/>
+            </basic>
+            <basic name="isOccupied">
+                <column name="is_occupied"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.base.auth.persistence.User">
+        <table name="users"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="loginRetryCounter">
+                <column name="login_retry_counter"/>
+            </basic>
+            <basic name="lastLoginDate">
+                <column name="last_login_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="blockedDate">
+                <column name="blocked_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="blockedTillDate">
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="theme">
+                <column name="theme" nullable="false" column-definition="VARCHAR(40) DEFAULT 'excite-bike'"/>
+            </basic>
+            <basic name="status">
+                <!--convert>userStatusConverter</convert-->
+                <enumerated>ORDINAL</enumerated>
+            </basic>
+            <basic name="usedPasswords">
+                <column name="used_passwords" />
+            </basic>
+            <basic name="lastPasswordChanged">
+                <column name="LAST_PASSWORD_CHANGED"  />
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="createdDate">
+                <column name="CREATED_DATE"  />
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <many-to-one name="group" fetch="LAZY">
+                <join-table name="users_groups">
+                    <join-column name="user_id" nullable="false"/>
+                    <inverse-join-column name="group_id" nullable='false'/>
+                </join-table>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.base.auth.persistence.Group">
+        <table name="groups"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <one-to-many name="userList" fetch="LAZY">
+                <join-table name="users_groups">
+                    <join-column name="group_id" nullable="false"/>
+                    <inverse-join-column name="user_id" nullable='false'/>
+                </join-table>
+            </one-to-many>
+            <one-to-many name="roles" fetch="LAZY">
+                <join-table name="groups_roles_join">
+                    <join-column name="group_id"/>
+                    <inverse-join-column name="role_id"/>
+                </join-table>
+            </one-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.base.auth.persistence.Role">
+        <table name="roles"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <many-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </many-to-one>
+            <many-to-one name="module">
+                <join-column name="module_id" nullable="false"/>
+            </many-to-one>
+            <one-to-many name="permissions" fetch="LAZY">
+                <join-table name="role_permissions">
+                    <join-column name="role_id" nullable="false"/>
+                    <inverse-join-column name="permission_id" nullable="false"/>
+                </join-table>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.base.auth.persistence.Module">
+        <table name="modules"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <one-to-many name="subModules" mapped-by="module" fetch="LAZY">
+            </one-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.base.auth.persistence.SubModule">
+        <table name="submodules"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <many-to-one name="module" fetch="LAZY">
+                <join-column name="module_id" nullable="false"/>
+            </many-to-one>
+            <element-collection name="pathMap">
+                <map-key-column name="path"/>
+                <column name="privilige"/>
+                <convert>privilegeConverter</convert>
+                <collection-table name="submodule_paths">
+                    <join-column name="submodule_id" nullable="false"/>
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.base.auth.persistence.Permission">
+        <table name="permissions"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <element-collection name="privilegeList">
+                <column name="perm_prvilige"/>
+                <convert>privilegeConverter</convert>
+                <collection-table name="perms_privs">
+                    <join-column name="perm_id" nullable="false"/>
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </entity>
+
+
+    <entity class="com.jaravir.tekila.base.auth.persistence.ExternalUser">
+        <table name="ext_users"></table>
+        <attributes>
+            <id name="id"></id>
+            <basic name="username">
+                <column name="username"/>
+            </basic>
+            <basic name="passwd">
+                <column name="passwd"/>
+            </basic>
+            <basic name="userType">
+                <column name="user_type"/>
+            </basic>
+            <basic name="allowedAddresses">
+                <column name="allowed_ip_addresses"/>
+            </basic>
+
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.base.auth.persistence.ExternalSession">
+        <table name="ext_users_sessions"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+
+            <basic name="userType">
+                <column name="user_type"/>
+            </basic>
+
+            <basic name="session">
+                <column name="session_id"/>
+            </basic>
+
+            <basic name="remoteAddress">
+                <column name="remote_ip_address"/>
+            </basic>
+
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.stats.persistence.entity.OfflineBroadbandStats">
+        <table name="offline_stats"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="offlineStatsPKSeq2"/>
+                <sequence-generator name="offlineStatsPKSeq2" sequence-name="offline_stats_seq2" allocation-size="1"
+                                    initial-value="0"/>
+            </id>
+            <basic name="startTime">
+                <column name="start_time"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="endTime">
+                <column name="end_time"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="up">
+                <column name="up_volume"/>
+            </basic>
+            <basic name="down">
+                <column name="down_volume"/>
+            </basic>
+            <basic name="user">
+                <column name="username"/>
+            </basic>
+            <basic name="callingStationID">
+                <column name="calling_station_id"/>
+            </basic>
+            <basic name="framedAddress">
+                <column name="framed_address"/>
+            </basic>
+            <basic name="nasIpAddress">
+                <column name="nas_ip_address"/>
+            </basic>
+            <one-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.stats.persistence.entity.OnlineBroadbandStats">
+        <table name="online_stats"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="startTime">
+                <column name="start_time"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="endTime">
+                <column name="end_time"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="up">
+                <column name="up_volume"/>
+            </basic>
+            <basic name="down">
+                <column name="down_volume"/>
+            </basic>
+            <basic name="user">
+                <column name="username"/>
+            </basic>
+            <basic name="callingStationID">
+                <column name="calling_station_id"/>
+            </basic>
+            <basic name="framedAddress">
+                <column name="framed_address"/>
+            </basic>
+            <basic name="nasIpAddress">
+                <column name="nas_ip_address"/>
+            </basic>
+            <basic name="accountID">
+                <column name="account_id"/>
+            </basic>
+            <basic name="dslamIpAddress">
+                <column name="dslam_ip_address"/>
+            </basic>
+            <one-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <!-- Store -->
+    <entity class="com.jaravir.tekila.module.store.ip.persistence.IpAddress" access="PROPERTY">
+        <table name="store_ip_addresses"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="status">
+                <convert>ipAddressConverter</convert>
+            </basic>
+            <basic name="addressAsString">
+                <column name="address"/>
+            </basic>
+            <transient name="rawAddress"/>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.store.ip.persistence.IpAddressRange">
+        <table name="store_ip_ranges"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <one-to-many name="reservedAddressList">
+                <join-table name="reserved_ip_addresses">
+                    <join-column name="range_id" nullable="false"/>
+                    <inverse-join-column name="address_id" nullable="false"/>
+                </join-table>
+            </one-to-many>
+            <one-to-one name="start">
+                <join-column name="start_address" nullable="false"/>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <one-to-one name="end">
+                <join-column name="end" nullable="false"/>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <one-to-one name="nas">
+                <join-column name="nas_id" nullable="false"/>
+
+            </one-to-one>
+            <transient name="mask"/>
+            <transient name="defaultMask"/>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.store.mobile.Imsi">
+        <table name="store_imsi"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="identifier">
+                <column name="imsi" nullable="false"/>
+            </basic>
+            <basic name="category">
+                <convert>mobileCategoryConverter</convert>
+            </basic>
+            <basic name="status">
+                <convert>storeItemStatusConverter</convert>
+            </basic>
+            <one-to-one name="msisdn">
+                <join-column name="msisdn" nullable="true"/>
+            </one-to-one>
+            <one-to-one name="user">
+                <join-column name="user_id" nullable="false"/>
+            </one-to-one>
+            <one-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.store.mobile.Msisdn">
+        <table name="store_msisdn"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="value">
+                <column name="msisdn" nullable="false"/>
+            </basic>
+            <basic name="status">
+                <convert>storeItemStatusConverter</convert>
+            </basic>
+            <basic name="category">
+                <convert>mobileCategoryConverter</convert>
+            </basic>
+            <one-to-one name="commercialCategory">
+                <join-column name="com_category_id"/>
+            </one-to-one>
+            <one-to-one name="priceSetting">
+                <join-column name="price_setting_id"/>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <one-to-one name="user">
+                <join-column name="user_id" nullable="false"/>
+            </one-to-one>
+            <one-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.store.setting.PriceSetting">
+        <table name="store_item_setting_price"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.store.mobile.CommercialCategory">
+        <table name="store_commercial_category"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <one-to-one name="user">
+                <join-column name="user_id" nullable="false"/>
+            </one-to-one>
+            <one-to-one name="taxCategory">
+                <join-column name="tax_category" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.base.entity.Test">
+        <table name="tests"></table>
+        <attributes>
+            <id name="id">
+            </id>
+            <basic name="dt">
+                <convert>testConverter</convert>
+            </basic>
+            <basic name="dtDate">
+                <convert>testDateConverter</convert>
+            </basic>
+            <basic name="creationDate">
+                <column name="createdon" column-definition="DATE DEFAULT CURRENT_DATE" insertable="false"
+                        updatable="false"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.event.notification.Notification">
+        <table name="event_notifications"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="channell">
+                <convert>notificationChannelConverter</convert>
+            </basic>
+            <basic name="event">
+                <convert>billingEventConverter</convert>
+            </basic>
+            <basic name="lang">
+                <convert>languageConverter</convert>
+            </basic>
+            <basic name="subscriberType">
+                <column name="subscriber_type"/>
+            </basic>
+            <basic name="lifeCycleType">
+                <column name="lifecycle_type"/>
+            </basic>
+            <many-to-many name="providerList">
+                <join-table name="notif_providers">
+                    <join-column name="notification_id" nullable="false"/>
+                    <inverse-join-column name="provider_id" nullable="false"/>
+                </join-table>
+            </many-to-many>
+            <many-to-many name="serviceList">
+                <join-table name="notif_services">
+                    <join-column name="notification_id" nullable="false"/>
+                    <inverse-join-column name="service_id" nullable="false"/>
+                </join-table>
+            </many-to-many>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.event.notification.channell.NotificationChannelStatus">
+        <table name="notification_channel_status"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.store.equip.EquipmentModel">
+        <table name="equipment_models"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.store.equip.Equipment">
+        <table name="equipment"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="status">
+                <convert>equipmentStatusConverter</convert>
+            </basic>
+            <basic name="deviceStatus">
+                <column name="device_status"/>
+                <convert>deviceStatusConverter</convert>
+            </basic>
+            <many-to-one name="model">
+                <join-column name="model_id" nullable="false"/>
+            </many-to-one>
+            <many-to-one name="brand">
+                <join-column name="brand_id" nullable="false"/>
+            </many-to-one>
+            <many-to-one name="type">
+                <join-column name="type_id" nullable="false"/>
+            </many-to-one>
+            <many-to-one name="provider">
+                <join-column name="provider_id"/>
+            </many-to-one>
+            <one-to-one name="price">
+                <join-column name="price_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.store.equip.EquipmentBrand">
+        <table name="equipment_brands"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.store.equip.EquipmentType">
+        <table name="equipment_types"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.store.equip.price.EquipmentPrice">
+        <table name="equipment_prices"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+        </attributes>
+    </entity>
+    <!-- Sales -->
+    <entity class="com.jaravir.tekila.module.sales.SalesArea">
+        <table name="sales_areas"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.sales.SalesPerson">
+        <table name="sales_persons"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <many-to-one name="area">
+                <join-column name="area_id" nullable="false"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.sales.persistence.entity.SalesPartner">
+        <table name="sales_partners"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="type">
+                <convert>salesPartnerTypeConverter</convert>
+            </basic>
+            <basic name="creationDate">
+                <column name="creation_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="desc">
+                <column name="dsc"/>
+            </basic>
+            <one-to-many name="partnerList">
+                <join-table name="sales_partners_join">
+                    <join-column name="principal_id"/>
+                    <inverse-join-column name="partner_id"/>
+                </join-table>
+            </one-to-many>
+            <one-to-many name="invoiceList" mapped-by="partner"/>
+            <one-to-many name="storeList">
+                <join-table name="sales_partner_stores_join">
+                    <join-column name="sales_partner_id"/>
+                    <inverse-join-column name="store_id"/>
+                </join-table>
+            </one-to-many>
+            <one-to-one name="user">
+                <join-column name="user_id"/>
+            </one-to-one>
+            <one-to-one name="principal">
+                <join-column name="principal_id"/>
+            </one-to-one>
+            <one-to-one name="partnerUser">
+                <join-column name="partner_user_id"/>
+            </one-to-one>
+            <element-collection name="settingsMap">
+                <map-key-column name="setting"/>
+                <column name="setting_value"/>
+                <collection-table name="sales_partner_settings">
+                    <join-column name="sales_partner_id"/>
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.store.SalesPartnerStore">
+        <table name="sales_partner_stores"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="name"/>
+            <basic name="creationDate">
+                <column name="creation_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="desc">
+                <column name="dsc"/>
+            </basic>
+            <one-to-many name="equipmentList">
+                <join-table name="sales_partner_store_equip">
+                    <join-column name="sales_partner_store_id"/>
+                    <inverse-join-column name="equipment_id"/>
+                </join-table>
+            </one-to-many>
+            <one-to-one name="owner">
+                <join-column name="sales_partner_id"/>
+            </one-to-one>
+            <one-to-one name="user">
+                <join-column name="user_id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <!-- EXTERNAL -->
+    <entity class="com.jaravir.tekila.extern.tt.TroubleTicket" read-only="true">
+        <table name="all_tickets"/>
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+            </id>
+            <basic name="group">
+                <column name="resp_group"/>
+            </basic>
+            <basic name="status">
+                <column name="status"/>
+            </basic>
+            <basic name="responsiblePerson">
+                <column name="bo_responsible"/>
+            </basic>
+            <basic name="classification">
+                <column name="classification"/>
+            </basic>
+            <basic name="created">
+                <temporal>DATE</temporal>
+            </basic>
+        </attributes>
+    </entity>
+    <!--  archive -->
+
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.SubscriberDetails">
+        <table name="subscriber_details"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="dateOfBirth">
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="passportIssueDate">
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="entryDate">
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="lang">
+                <convert>languageConverter</convert>
+            </basic>
+            <one-to-one name="subscriber" mapped-by="details">
+                <join-column name="subcriber_id"/>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <one-to-one name="user">
+                <join-column name="user_id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <!-- archive -->
+    <entity class="com.jaravir.tekila.module.archive.subscription.SubscriberArchived">
+        <table name="archive_subscribers"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="objectVersion">
+                <column name="object_version"/>
+            </basic>
+            <basic name="archivedDate">
+                <column name="archived_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="dateOfBirth">
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="passportIssueDate">
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="lang">
+                <convert>languageConverter</convert>
+            </basic>
+            <basic name="entryDate">
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="isBilledByLifeCycle">
+                <column name="is_bill_by_lifecycle"/>
+            </basic>
+            <basic name="lifeCycle">
+                <column name="life_cycle"/>
+            </basic>
+            <basic name="creationDate">
+                <column name="creationdate"/>
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="entryDate">
+                <temporal>TIMESTAMP</temporal>
+            </basic>
+            <one-to-one name="user">
+                <join-column name="user_id" nullable="false"/>
+            </one-to-one>
+            <one-to-one name="subscriber">
+                <join-column name="subscriber_id" nullable="false"/>
+            </one-to-one>
+            <one-to-one name="subscriberDetails">
+                <join-column name="sub_detail_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <!--<entity class="com.jaravir.tekila.module.archive.accounting.PaymentArchived" parent-class="com.jaravir.tekila.module.accounting.entity.Payment">
+        <table name="payment_archive"/>
+        <attribute-override name="fd">
+            <column name="fd"/>
+        </attribute-override>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="paymentArchivePKSeq"/>
+                <sequence-generator name="paymentArchivePKSeq" sequence-name="paym_arch_seq_pk" allocation-size="1" initial-value="0"/>
+            </id>
+            <embedded name="archiveEntity"/>
+        </attributes>
+    </entity>
+    <embeddable class="com.jaravir.tekila.module.archive.ArchiveEntity">
+        <attributes>
+            <basic name="sourceID">
+                <column name="source_id"/>
+            </basic>
+            <basic name="archivedDate">
+                <column name="archived_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="objectVersion">
+                <column name="object_version"/>
+            </basic>
+            <one-to-one name="archivingUser">
+                <join-column name="archive_user_id"/>
+            </one-to-one>
+        </attributes>
+    </embeddable>
+    -->
+    <!-- system -->
+    <entity class="com.jaravir.tekila.module.system.reproccessing.ReproccessorLogRecord">
+        <table name="system_log_reproccessing"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <one-to-one name="payment">
+                <join-column name="payment_id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.system.log.SystemLogRecord">
+        <table name="system_log"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="sysLogPkSeq"/>
+                <sequence-generator name="sysLogPkSeq" initial-value="15000425" sequence-name="sys_log_pk_seq"
+                                    allocation-size="1"/>
+            </id>
+            <basic name="event">
+                <convert>systemEventConverter</convert>
+            </basic>
+            <basic name="dsc">
+                <column name="dsc" column-definition="VARCHAR2(4000)"/>
+            </basic>
+            <one-to-one name="provider">
+                <join-column name="provider_id"/>
+            </one-to-one>
+            <one-to-one name="subscription">
+                <join-column name="subscription_id" nullable="true"/>
+            </one-to-one>
+            <one-to-one name="user">
+                <join-column name="user_id"/>
+            </one-to-one>
+            <one-to-one name="transaction">
+                <join-column name="transaction_id" nullable="true"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.system.log.ErrorLogRecord">
+        <table name="error_log"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="errLogPkSeq"/>
+                <sequence-generator name="errLogPkSeq" initial-value="1" sequence-name="ERR_LOG_PK_SEQ"
+                                    allocation-size="1"/>
+            </id>
+
+            <basic name="className">
+                <column name="class" column-definition="VARCHAR2(4000)"/>
+            </basic>
+
+
+            <basic name="methodName">
+                <column name="method" column-definition="VARCHAR2(4000)"/>
+            </basic>
+
+            <basic name="line">
+                <column name="line" column-definition="NUMBER"/>
+            </basic>
+
+            <basic name="message">
+                <column name="message" column-definition="VARCHAR2(4000)"/>
+            </basic>
+
+            <basic name="info">
+                <column name="info" column-definition="CLOB"/>
+            </basic>
+
+        </attributes>
+    </entity>
+
+    <!-- periodic -->
+    <entity class="com.jaravir.tekila.module.periodic.Job">
+        <table name="jobs"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="startTime">
+                <column name="start_time"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="deadline">
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="category">
+                <convert>jobCategoryConverter</convert>
+            </basic>
+            <one-to-many name="propertyList">
+                <join-table name="job_properties_join">
+                    <join-column name="job_id" nullable="false"/>
+                    <inverse-join-column name="prop_id" nullable="false"/>
+                </join-table>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            <one-to-one name="user">
+                <join-column name="user_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.periodic.JobProperty">
+        <table name="job_properties"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="type">
+                <convert>jobPropertyTypeConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.campaign.Campaign">
+        <table name="campaigns"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="count">
+                <column name="cnt"/>
+            </basic>
+            <basic name="bonusCount">
+                <column name="bonus_count"/>
+            </basic>
+            <basic name="expirationDate">
+                <column name="expiration_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="isCompound">
+                <column name="is_compound"/>
+            </basic>
+            <basic name="isAutomatic">
+                <column name="is_auto"/>
+            </basic>
+            <basic name="isCancelInvoice">
+                <column name="is_cancel_invoice"/>
+            </basic>
+            <basic name="isActivateOnDemand">
+                <column name="is_activate_on_demand"/>
+            </basic>
+            <basic name="isActivateOnManualPaymentOnly">
+                <column name="is_activate_on_manual_payment"/>
+            </basic>
+            <basic name="isActivateOnPayment">
+                <column name="is_activate_on_payment"/>
+            </basic>
+            <basic name="isAvailableOnCreation">
+                <column name="is_available_on_creation"/>
+            </basic>
+            <basic name="equipmentDiscount">
+                <column name="equipment_discount"/>
+            </basic>
+            <basic name="desc">
+                <column name="dsc"/>
+            </basic>
+            <basic name="isVasOnly">
+                <column name="is_vas_only"/>
+            </basic>
+            <basic name="partialPromoTransfer">
+                <column name="partial_promo_transfer"/>
+            </basic>
+            <basic name="promoTransferLimit">
+                <column name="promo_transfer_limit"/>
+            </basic>
+            <basic name="bonusDate">
+                <column name="bonus_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="corporateEnabled">
+                <column name="corporate_enabled"/>
+            </basic>
+            <one-to-many name="serviceList">
+                <join-table name="campaign_services_list">
+                    <join-column name="campaign_id"/>
+                    <inverse-join-column name="service_id"/>
+                </join-table>
+            </one-to-many>
+            <one-to-many name="vasList">
+                <join-table name="campaign_vas_list">
+                    <join-column name="campaign_id"/>
+                    <inverse-join-column name="vas_id"/>
+                </join-table>
+            </one-to-many>
+            <one-to-many name="campaignList">
+                <join-table name="campaign_extra_list">
+                    <join-column name="campaign_id"/>
+                    <inverse-join-column name="extra_id"/>
+                </join-table>
+            </one-to-many>
+            <one-to-one name="provider">
+                <join-column name="provider_id"/>
+            </one-to-one>
+            <element-collection name="bonusLimits">
+                <map-key-join-column name="service_id"/>
+                <column name="bonus_limit"/>
+                <collection-table name="campaign_bonus_limits"/>
+            </element-collection>
+        </attributes>
+    </entity>
+    <entity class="com.jaravir.tekila.module.accounting.entity.PaymentOption">
+        <table name="payment_options"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="paymentOptionsGenerator"/>
+                <sequence-generator name="paymentOptionsGenerator" sequence-name="PAYMENT_OPTIONS_SEQUENCE"
+                                    allocation-size="1" initial-value="10"/>
+            </id>
+            <basic name="name">
+                <column name="name"></column>
+            </basic>
+            <one-to-many name="payments"
+                         target-entity="com.jaravir.tekila.module.accounting.entity.Payment"
+                         mapped-by="method"
+                         fetch="LAZY"/>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.campaign.CampaignRegister">
+        <table name="campaign_register"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="joinDate">
+                <column name="join_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="processedDate">
+                <column name="processed_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="campaignNotes">
+                <column name="campaign_notes"/>
+            </basic>
+            <basic name="bonusDate">
+                <column name="bonus_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="nobonusDate">
+                <column name="no_bonus_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <many-to-one name="subscription" fetch="EAGER">
+                <join-column name="subscription_id"/>
+            </many-to-one>
+            <one-to-many name="vasList">
+                <join-table name="campaign_register_vas_list">
+                    <join-column name="campaign_register_id"/>
+                    <inverse-join-column name="vas_id"/>
+                </join-table>
+            </one-to-many>
+            <one-to-one name="campaign">
+                <join-column name="campaign_id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.report.EmailReport">
+        <table name="email_report"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+
+            </id>
+            <basic name="fromDate">
+                <column name="from_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="toDate">
+                <column name="to_date"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="email">
+                <column name="email"/>
+            </basic>
+            <basic name="sent">
+                <column name="sent"/>
+            </basic>
+            <basic name="selectedProviderId">
+                <column name="selected_provider_id"/>
+            </basic>
+            <basic name="externalUserName">
+                <column name="external_user_name"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.base.entity.PasswordResetConfirmation">
+        <table name="password_reset_pending"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.Ats">
+        <table name="ats"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="name">
+                <column name="name"/>
+            </basic>
+            <basic name="coor">
+                <column name="coor"/>
+            </basic>
+            <basic name="atsIndex">
+                <column name="ats_index"/>
+            </basic>
+            <basic name="status">
+                <column name="status"/>
+            </basic>
+            <many-to-one name="provider">
+                <join-column name="provider_id"/>
+            </many-to-one>
+            <one-to-many name="midipopList">
+                <join-table name="midipop_ats_join">
+                    <join-column name="ats_id"/>
+                    <inverse-join-column name="midipop_id"/>
+                </join-table>
+            </one-to-many>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.store.nas.Nas">
+        <table name="nas"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="name">
+                <column name="name"/>
+            </basic>
+            <basic name="IP">
+                <column name="ip"/>
+            </basic>
+            <basic name="secretKey">
+                <column name="secret_key"/>
+            </basic>
+            <basic name="description">
+                <column name="description"/>
+            </basic>
+            <one-to-many name="attributeList">
+                <join-table name="nas_attribute_join">
+                    <join-column name="nas_id"/>
+                    <inverse-join-column name="attribute_id"/>
+                </join-table>
+            </one-to-many>
+            <one-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.store.nas.Attribute">
+        <table name="attribute"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="name">
+                <column name="name"/>
+            </basic>
+            <basic name="tag">
+                <column name="tag"/>
+            </basic>
+            <basic name="value">
+                <column name="value"/>
+            </basic>
+            <basic name="status">
+                <column name="status"/>
+            </basic>
+            <basic name="description">
+                <column name="description"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.Streets">
+        <table name="streets"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="streetsSeq"/>
+                <sequence-generator name="streetsSeq"
+                                    sequence-name="streets_seq"
+                                    initial-value="0"
+                                    allocation-size="1"/>
+            </id>
+
+            <basic name="atsIndex">
+                <column name="ats_index"/>
+            </basic>
+
+            <basic name="streetIndex">
+                <column name="street_index"/>
+            </basic>
+
+            <basic name="name">
+                <column name="street_name"/>
+            </basic>
+        </attributes>
+    </entity>
+
+
+    <entity class="com.jaravir.tekila.module.service.entity.ServiceProfile">
+        <table name="service_profile"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="period">
+                <column name="period"/>
+            </basic>
+            <basic name="up">
+                <column name="up"/>
+            </basic>
+            <basic name="down">
+                <column name="down"/>
+            </basic>
+            <basic name="from">
+                <column name="from_time"/>
+            </basic>
+            <basic name="to">
+                <column name="to_time"/>
+            </basic>
+            <one-to-one name="service">
+                <join-column name="service_id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+
+    <entity class="com.jaravir.tekila.provision.broadband.devices.Midipop">
+        <table name="midipop"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="name">
+                <column name="name"/>
+            </basic>
+            <basic name="status">
+                <column name="status"/>
+            </basic>
+            <basic name="cable">
+                <column name="cable"/>
+            </basic>
+            <basic name="nodes">
+                <column name="nodes"/>
+            </basic>
+            <basic name="switchIp">
+                <column name="switch_ip"/>
+            </basic>
+            <basic name="switchPort">
+                <column name="switch_port"/>
+            </basic>
+            <basic name="vlan">
+                <column name="vlan"/>
+            </basic>
+            <one-to-many name="reservedPortList">
+                <join-table name="midipop_ports_join">
+                    <join-column name="midipop_id"/>
+                    <inverse-join-column name="port_id"/>
+                </join-table>
+            </one-to-many>
+            <one-to-one name="ats">
+                <join-column name="ats_id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.provision.broadband.devices.MidipopPort">
+        <table name="midipop_ports"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="isOccupied">
+                <column name="is_occupied"/>
+            </basic>
+            <basic name="midipopPort">
+                <column name="midipop_port"/>
+            </basic>
+            <basic name="midipopSlot">
+                <column name="midipop_slot"/>
+            </basic>
+            <one-to-one name="midipop">
+                <join-column name="midipop_id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.store.scratchcard.persistence.entity.ScratchCard">
+        <table name="scratch_card"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="validTo">
+                <column name="valid_to"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="validFrom">
+                <column name="valid_from"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="amount">
+                <column name="amount"/>
+            </basic>
+            <basic name="batchID">
+                <column name="batch_id"/>
+            </basic>
+            <basic name="pin">
+                <column name="pin"/>
+            </basic>
+            <basic name="status">
+                <column name="status"/>
+            </basic>
+            <one-to-one name="serial">
+                <join-column name="serial"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.store.scratchcard.persistence.entity.Serial">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="serialSeq"/>
+                <sequence-generator name="serialSeq" sequence-name="serial_seq" initial-value="10000000"
+                                    allocation-size="1"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.store.scratchcard.persistence.entity.BatchID">
+        <table name="batch_id"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="batchID">
+                <column name="batch_id"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.store.scratchcard.persistence.entity.ScratchCardBlockingSetting">
+        <table name="sc_card_blocking_setting"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="maxAttemptCount">
+                <column name="max_attempt_count"/>
+            </basic>
+            <basic name="blockingHours">
+                <column name="blocking_hours"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.store.scratchcard.persistence.entity.ScratchCardSession">
+        <table name="sc_card_session"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="lastAttemptTime">
+                <column name="last_attempt_time"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+            <basic name="wrongAttempt">
+                <column name="wrong_attempt"/>
+            </basic>
+            <basic name="wrongPin">
+                <column name="wrong_pin"/>
+            </basic>
+            <basic name="wrongSerial">
+                <column name="wrong_serial"/>
+            </basic>
+            <basic name="agreement">
+                <column name="agreement"/>
+            </basic>
+            <basic name="serial">
+                <column name="serial"/>
+            </basic>
+            <basic name="isBlocked">
+                <column name="is_blocked"/>
+            </basic>
+            <one-to-one name="subscription">
+                <join-column name="subscription_id" nullable="false"/>
+            </one-to-one>
+            <one-to-one name="scratchCard">
+                <join-column name="card_id"/>
+            </one-to-one>
+            <one-to-one name="payment">
+                <join-column name="payment_id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.accounting.entity.ChequeSequence">
+        <table name="cheque_sequence"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="chequeNum">
+                <column name="cheque_num" nullable="false"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.service.entity.ServiceSubgroup">
+        <table name="service_subgroup"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.House">
+        <table name="houses"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="houseNo">
+                <column name="house_no"/>
+            </basic>
+        </attributes>
+    </entity>
+
+
+    <entity class="com.jaravir.tekila.module.convergent.ConvergentQueue">
+        <table name="convergent_queue"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="td">
+                <column name="td"/>
+                <convert>dateTimeToDateConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+
+
+    <entity class="com.jaravir.tekila.module.engines.Engine">
+        <table name="engines"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+
+            <many-to-one name="provider">
+                <join-column name="provider_id"/>
+            </many-to-one>
+
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.Dealer">
+        <table name="dealers"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="isDealWithSubscribers">
+                <column name="subscriber"/>
+            </basic>
+            <basic name="isDealWithCards">
+                <column name="card"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.subscription.persistence.entity.Reseller">
+        <table name="resellers"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="name">
+                <column name="name"/>
+            </basic>
+            <basic name="username">
+                <column name="username"/>
+            </basic>
+            <basic name="password">
+                <column name="password"/>
+            </basic>
+            <basic name="description">
+                <column name="description"/>
+            </basic>
+            <many-to-one name="provider">
+                <join-column name="provider_id" nullable="false"/>
+            </many-to-one>
+            <one-to-one name="user">
+                <join-column name="user_id" nullable="false"/>
+            </one-to-one>
+            <many-to-many name="minipops">
+                <join-table name="reseller_minipop_join">
+                    <join-column name="reseller_id" nullable="false"/>
+                    <inverse-join-column name="minipop_id" nullable="false"/>
+                </join-table>
+            </many-to-many>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.base.entity.ATSGOV">
+        <table name="ats_govs"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="sname">
+                <column name="sname"/>
+            </basic>
+            <basic name="name">
+                <column name="name"/>
+            </basic>
+            <basic name="dirFname">
+                <column name="dir_fname"/>
+            </basic>
+            <basic name="dirName">
+                <column name="dir_name"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.jaravir.tekila.module.messages.PersistentMessage">
+        <table name="persistent_messages"></table>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+            </id>
+            <basic name="properties">
+                <column name="properties"/>
+            </basic>
+            <basic name="status">
+                <column name="status"/>
+            </basic>
+            <basic name="messageType">
+                <column name="messageType"/>
+            </basic>
+            <basic name="paymentId">
+                <column name="payment_id"/>
+            </basic>
+            <transient name="keyToValue"/>
+        </attributes>
+    </entity>
+
+    <converter name="dateTimeToCalendarConverter" class="com.jaravir.tekila.base.entity.DateTimeToCalendarConverter"/>
+    <converter name="localTimeToCalendarConverter" class="com.jaravir.tekila.base.entity.LocalTimeToCalendarConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.TransactionTypeConverter"
+               name="transactionTypeConverter"></converter>
+    <converter class="com.jaravir.tekila.base.entity.SubscriptionStatusConverter"
+               name="subscriptionStatusConverter"></converter>
+    <converter class="com.jaravir.tekila.base.entity.SubscriptionTypeConverter"
+               name="subscriptionTypeConverter"></converter>
+    <converter class="com.jaravir.tekila.base.entity.InvoiceStateConverter" name="invoiceStateConverter"></converter>
+    <converter class="com.jaravir.tekila.base.entity.AccountingCategoryTypeConverter"
+               name="accCategoryTypeConverter"></converter>
+    <converter class="com.jaravir.tekila.base.entity.AccountingTransactionTypeConverter"
+               name="accTransactionTypeConverter"></converter>
+
+    <!--converter class="com.jaravir.tekila.base.entity.ScratchCardSettingTypeConverter"
+               name="scratchCardSettingTypeConverter"></converter-->
+    <converter name="testConverter" class="com.jaravir.tekila.base.entity.TestConverter"/>
+    <converter name="testDateConverter" class="com.jaravir.tekila.base.entity.TestDateConverter"/>
+    <converter name="ipAddressConverter" class="com.jaravir.tekila.base.entity.IpAddressStatusConverter"/>
+    <converter name="dateTimeToDateConverter" class="com.jaravir.tekila.base.entity.DateTimeToDateConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.PaymentPurposeConverter" name="paymentPurposeConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.BillingEventConverter" name="billingEventConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.NotificationChannelConverter" name="notificationChannelConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.LanguageConverter" name="languageConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.PrivilegeConverter" name="privilegeConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.EquipmentStatusConverter" name="equipmentStatusConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.StaticIPTypeConverter" name="staticIPTypeConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.FinancialTypeConverter" name="finTypeConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.DeviceStatusConverter" name="deviceStatusConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.SystemEventConverter" name="systemEventConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.SubscriberFunctionalCategoryConverter"
+               name="funcCategoryConverter"/>
+    <!--converter class="com.jaravir.tekila.base.entity.UserStatusConverter" name="userStatusConverter"/ -->
+    <converter class="com.jaravir.tekila.base.entity.StoreItemStatusConverter" name="storeItemStatusConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.MobileCategoryConverter" name="mobileCategoryConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.JobCategoryConverter" name="jobCategoryConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.JobPropertyTypeConverter" name="jobPropertyTypeConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.AccountingStatusConverter" name="accountingStatusConverter"/>
+    <converter class="com.jaravir.tekila.base.entity.SalesPartnerTypeConverter" name="salesPartnerTypeConverter"/>
+</entity-mappings>

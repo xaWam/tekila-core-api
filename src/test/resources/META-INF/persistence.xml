@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="tekila_test" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<!--<jar-file>file:///C:/Users/sajabrayilov/.m2/repository/com/jaravir/tekila/tekila-core-api/0.0.5-SNAPSHOT/tekila-core-api-0.0.5-SNAPSHOT.jar</jar-file>-->
+		<mapping-file>META-INF/eclipselink-orm.xml</mapping-file>
+		<properties>
+			<!--<property name="javax.persistence.jdbc.user" value="TEKILA"/>
+			<property name="javax.persistence.jdbc.password" value="PT=3NZ95gv?3rt"/>-->
+			<property name="javax.persistence.jdbc.user" value="tekila_back"/>
+			<property name="javax.persistence.jdbc.password" value="bosK=bolo*12"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@(DESCRIPTION=(FAILOVER=on)(ADDRESS=(PROTOCOL=TCP)(HOST=10.13.44.66)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=10.13.44.68) (PORT=1521))(CONNECT_DATA=(SERVICE_NAME=NARHOME.azerfon.az)))"/>
+			<property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+			<property name="eclipselink.target-database" value="ORACLE"/>
+			<property name="eclipselink.logging-level" value="ALL"/>
+			<property name="eclipselink.logging.level.sql" value="FINE"/>
+			<property name="eclipselink.logging.parameters" value="true"/>
+			<property name="eclipselink.ddl-generation" value="create-tables"/>
+		</properties>
+	</persistence-unit>
+</persistence>

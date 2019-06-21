@@ -1,0 +1,34 @@
+<binding xmlns:ns1="http://jaravir.com/tekila/module/service" xmlns:ns3="http://jaravir.com/tekila/base/entity">
+  <namespace uri="http://jaravir.com/tekila/module/service" default="elements" prefix="ns1"/>
+  <mapping abstract="true" type-name="ns1:service" class="com.jaravir.tekila.module.service.entity.Service">
+    <structure map-as="ns3:baseEntity"/>
+    <value style="attribute" name="id" field="id"/>
+    <value style="element" name="name" field="name" usage="optional"/>
+    <structure map-as="ns1:rateProfile" field="rateProfile" usage="optional" name="rateProfile"/>
+    <value style="element" name="serviceType" field="serviceType" usage="optional"/>
+    <value style="attribute" name="isBillByLifeCycle" field="isBillByLifeCycle"/>
+  </mapping>
+  <mapping extends="com.jaravir.tekila.base.entity.BaseEntity" class="com.jaravir.tekila.module.service.entity.Service" name="service">
+    <structure map-as="ns1:service"/>
+  </mapping>
+  <mapping abstract="true" type-name="ns1:rate" class="com.jaravir.tekila.module.service.entity.Rate">
+    <structure map-as="ns3:baseEntity"/>
+    <value style="element" name="name" field="name" usage="optional"/>
+    <value style="attribute" name="price" field="price"/>
+    <value style="attribute" name="isUsePromoResources" field="isUsePromoResources"/>
+  </mapping>
+  <mapping extends="com.jaravir.tekila.base.entity.BaseEntity" class="com.jaravir.tekila.module.service.entity.Rate" name="rate">
+    <structure map-as="ns1:rate"/>
+  </mapping>
+  <mapping abstract="true" type-name="ns1:rateProfile" class="com.jaravir.tekila.module.service.entity.RateProfile">
+    <structure map-as="ns3:baseEntity"/>
+    <value style="attribute" name="id" field="id"/>
+    <value style="element" name="name" field="name" usage="optional"/>
+    <collection field="rateList" usage="optional" create-type="java.util.ArrayList">
+      <structure map-as="ns1:rate" name="rate"/>
+    </collection>
+  </mapping>
+  <mapping extends="com.jaravir.tekila.base.entity.BaseEntity" class="com.jaravir.tekila.module.service.entity.RateProfile" name="rateProfile">
+    <structure map-as="ns1:rateProfile"/>
+  </mapping>
+</binding>

@@ -1,0 +1,10 @@
+<binding xmlns:ns3="http://jaravir.com/tekila/base/entity">
+  <namespace uri="http://jaravir.com/tekila/base/entity" default="elements"/>
+  <mapping abstract="true" type-name="ns3:baseEntity" class="com.jaravir.tekila.base.entity.BaseEntity">
+    <value style="attribute" name="id" field="id"/>
+    <value style="attribute" name="lastUpdateDate" field="lastUpdateDate" usage="optional"/>
+  </mapping>
+  <mapping class="com.jaravir.tekila.base.entity.BaseEntity" name="baseEntity">
+    <structure map-as="ns3:baseEntity"/>
+  </mapping>
+</binding>
